@@ -28,7 +28,7 @@ def view_breakdown(label: np.ndarray, pred: np.ndarray,
     :return: 内訳のdf
     """
     df_index = sorted(list(set(pred)), key=int)
-    df_columns = sort_smart(sorted(list(set(label))))
+    df_columns = sorted(list(set(label)))
     report = pd.DataFrame(index=df_index, columns=df_columns).fillna(0)
     report.index.name = "cluster_number"
     report.columns.name = "True_class"
