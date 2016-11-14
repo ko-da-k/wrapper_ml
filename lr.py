@@ -54,8 +54,3 @@ class LRClassifier(Classification):
         if plot:
             sns.heatmap(self.scores, annot=True, cmap="Blues")
             sns.plt.show()
-
-    def learn(self):
-        self._clf = self._return_base_model()
-        self._clf.fit(self.x_values().as_matrix(), self.y_values().as_matrix())
-        self.predict = lambda x: self._clf.predict(x)

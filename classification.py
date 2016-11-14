@@ -28,6 +28,11 @@ class Classification(MlData):
         """return base model"""
         raise NotImplementedError()
 
+    def learn(self):
+        self._clf = self._return_base_model()
+        self._clf.fit(self.x_values().as_matrix(), self.y_values().as_matrix())
+        self.predict = lambda x: self._clf.predict(x)
+
     def bootstrap_equal_labels(self, n_samples):
         """
         bootstrap each labels. number of label's sample is equal to each other.

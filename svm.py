@@ -59,8 +59,3 @@ class SVM(Classification):
 
         print(clf.best_estimator_)
         print("set classifier")
-
-    def learn(self):
-        self._clf = self._return_base_model()
-        self._clf.fit(self.x_values().as_matrix(), self.y_values().as_matrix())
-        self.predict = lambda x: self._clf.predict(x)
