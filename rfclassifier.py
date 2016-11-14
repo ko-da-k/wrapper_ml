@@ -6,8 +6,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
 import seaborn as sns
-from analysis.classification import Classification
-from analysis.balanced_random_forest import BalancedRandomForestClassifier
+from classification import Classification
+from balanced_random_forest import BalancedRandomForestClassifier
 
 
 class RFClassifier(Classification):

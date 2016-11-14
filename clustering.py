@@ -14,8 +14,7 @@ from scipy.cluster.hierarchy import linkage, dendrogram, fcluster, cophenet, war
 from scipy.spatial.distance import pdist
 import matplotlib.pyplot as plt
 import seaborn as sns
-from tools import sort_smart, view_breakdown
-from analysis.mldata import MlData
+from mldata import MlData
 
 
 def fancy_dendrogram(*args, **kwargs):

@@ -11,8 +11,27 @@ from sklearn.cross_validation import train_test_split, StratifiedKFold
 from sklearn.metrics import classification_report, roc_curve, auc
 from sklearn.learning_curve import learning_curve
 import seaborn as sns
-from tools import cr_to_df
-from analysis.mldata import MlData
+from mldata import MlData
+
+
+def cr_to_df(cr: str):
+    """
+    convert classification_report to DataFrame
+    :param cr: classification_report
+    :return: pd.Dataframe
+    """
+    crlist = list(filter(lambda x: len(x) != 0, re.split(" |\n", cr)))
+    crlist[crlist.index("avg")] = "".join(crlist[crlist.index("avg"):crlist.index("avg") + 3])
+    del crlist[crlist.index("avg/total") + 1:crlist.index("avg/total") + 3]
+    column = crlist[0:4]
+    del crlist[0:4]
+    index = np.array(crlist)[list(range(0, len(crlist), 5))]
+    # del np.array(crlist)[list(range(0,len(crlist),5))]
+    result = [crlist[i + 1:i + 5] for i in range(0, len(crlist), 5)]
+    crdf = pd.DataFrame(result, columns=column, index=index)
+    crdf[["precision", "recall", "f1-score"]] = crdf[["precision", "recall", "f1-score"]].astype(float)
+    crdf["support"] = crdf["support"].astype(int)
+    return crdf
 
 
 class Classification(MlData):

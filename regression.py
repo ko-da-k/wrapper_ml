@@ -18,7 +18,7 @@ import statsmodels.stats.outliers_influence as oti
 import statsmodels.tsa.api as tsa
 import matplotlib.pyplot as plt
 import seaborn as sns
-from analysis.mldata import MlData
+from mldata import MlData
 
 class Regression(MlData):
     """線形重回帰分析"""

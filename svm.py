@@ -8,7 +8,7 @@ from sklearn.svm import SVC
 from sklearn.cross_validation import StratifiedKFold
 from sklearn.grid_search import GridSearchCV
 import seaborn as sns
-from analysis.classification import Classification
+from classification import Classification
 
 
 class SVM(Classification):

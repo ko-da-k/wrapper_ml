@@ -6,15 +6,9 @@ from random import sample
 from math import sqrt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.externals.joblib import Parallel, delayed
-from sklearn.cross_validation import StratifiedKFold
-from sklearn.metrics import classification_report
 from sklearn.utils import resample
-from tools import cr_to_df
-from analysis.classification import Classification
 
 
 def _build_tree(train: np.ndarray, label: np.ndarray):
@@ -70,8 +64,8 @@ class BalancedRandomForestClassifier():
             for index, feature in zip(index_list, self.feature_list))
         # 各木の予測の多数決で決定
         self.predict = lambda x: [Counter(item).most_common(1)[0][0]
-                                  for item in np.array([tree.predict(x[:,feature])
-                                                        for tree,feature in zip(self.forest,self.feature_list)]).T]
+                                  for item in np.array([tree.predict(x[:, feature])
+                                                        for tree, feature in zip(self.forest, self.feature_list)]).T]
         # ここからはimportanceの計算
         count = np.zeros(x_values.shape[1])
         feature_importances = np.zeros(x_values.shape[1])
@@ -79,6 +73,3 @@ class BalancedRandomForestClassifier():
             count[feature] += 1
             feature_importances[feature] += tree.feature_importances_
         self.feature_importances_ = feature_importances / count
-
-
-
