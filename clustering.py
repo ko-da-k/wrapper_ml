@@ -17,6 +17,43 @@ import seaborn as sns
 from mldata import MlData
 
 
+def view_breakdown(label: np.ndarray, pred: np.ndarray,
+                   isplot: bool = True, kind: str = "bar", name: str = False) -> pd.DataFrame:
+    """
+    クラスタリングやクラス分類結果の内訳を表示
+    :param label: もとのラベル
+    :param pred: 結果
+    :param isplot: 可視化するかしないか
+    :param kind: bar or barh
+    :return: 内訳のdf
+    """
+    df_index = sorted(list(set(pred)), key=int)
+    df_columns = sort_smart(sorted(list(set(label))))
+    report = pd.DataFrame(index=df_index, columns=df_columns).fillna(0)
+    report.index.name = "cluster_number"
+    report.columns.name = "True_class"
+
+    for i in range(0, len(pred)):
+        report.ix[pred[i], label[i]] += 1
+    print(report)
+    if isplot:
+        ratio = (report / report.sum())
+        ratio.plot(kind=kind)
+        if kind == 'bar':
+            plt.ylim(0, 1)
+            plt.ylabel("Proportion")
+            plt.xlabel("Cluster ID")
+        else:
+            plt.xlim(0, 1)
+            plt.xlabel("Proportion")
+            plt.ylabel("cluster ID")
+        if name is not False:
+            plt.savefig(name)
+        plt.show()
+
+    return report
+
+
 def fancy_dendrogram(*args, **kwargs):
     max_d = kwargs.pop('max_d', None)
     if max_d and 'color_threshold' not in kwargs:
@@ -46,7 +83,7 @@ class HAC(MlData):
     """凝集型階層的クラスタリング"""
 
     def __init__(self, dataFrame: pd.DataFrame, y_column: str, x_columns: list,
-                 method: str ="ward", metric: str ="euclidean"):
+                 method: str = "ward", metric: str = "euclidean"):
         """
         :param method: 連結の方法
         :param metric: ベクトル間の距離
