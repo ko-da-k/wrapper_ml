@@ -14,7 +14,7 @@ from scipy.cluster.hierarchy import linkage, dendrogram, fcluster, cophenet, war
 from scipy.spatial.distance import pdist
 import matplotlib.pyplot as plt
 import seaborn as sns
-from mldata import MlData
+from .mldata import MlData
 
 
 def view_breakdown(label: np.ndarray, pred: np.ndarray,

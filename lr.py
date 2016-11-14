@@ -12,7 +12,7 @@ from sklearn.cross_validation import StratifiedKFold
 from sklearn.grid_search import GridSearchCV
 from sklearn.linear_model import LogisticRegression
 import seaborn as sns
-from classification import Classification
+from .classification import Classification
 
 
 class LRClassifier(Classification):

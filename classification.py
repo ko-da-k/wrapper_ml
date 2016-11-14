@@ -11,7 +11,7 @@ from sklearn.cross_validation import train_test_split, StratifiedKFold
 from sklearn.metrics import classification_report, roc_curve, auc
 from sklearn.learning_curve import learning_curve
 import seaborn as sns
-from mldata import MlData
+from .mldata import MlData
 
 
 def cr_to_df(cr: str):
