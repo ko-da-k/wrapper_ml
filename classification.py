@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import random
-import copy
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -97,7 +96,7 @@ class Classification(MlData):
             pred_label = np.hstack([pred_label, pred])
         del model
         print(classification_report(true_label, pred_label))
-        return cr_to_df(classification_report(true_label, pred_label))
+        return cr_to_df(classification_report(true_label, pred_label)),miss
 
     def draw_learning_curve(self):
         """http://aidiary.hatenablog.com/entry/20150826/1440596779"""
