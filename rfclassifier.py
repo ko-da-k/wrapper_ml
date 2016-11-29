@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
 import seaborn as sns
-from classification import Classification
+from .classification import Classification
 from .balanced_random_forest import BalancedRandomForestClassifier
 
 
