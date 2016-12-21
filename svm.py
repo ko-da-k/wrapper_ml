@@ -41,6 +41,7 @@ class SVM(Classification):
         clf.fit(self.x_values().as_matrix(), self.y_values().as_matrix())
 
         self._return_base_model = lambda: clf.best_estimator_
+        print("set base model")
 
         scores = [x[1] for x in clf.grid_scores_[:len(C_range) * len(gamma_range)]]
         scores = np.array(scores).reshape(len(C_range), len(gamma_range))

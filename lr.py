@@ -45,7 +45,10 @@ class LRClassifier(Classification):
 
         print("grid search...")
         clf.fit(self.x_values().as_matrix(), self.y_values().as_matrix())
+
         self._return_base_model = lambda: clf.best_estimator_
+        print("set base model")
+
         scores = [x[1] for x in clf.grid_scores_]
         scores = np.array(scores).reshape(len(C_range), 2)
         self.scores = pd.DataFrame(scores, index=C_range, columns=parameters["class_weight"])

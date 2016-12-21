@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.ensemble import RandomForestClassifier
+import pandas as pd
 import seaborn as sns
+from sklearn.ensemble import RandomForestClassifier
+
+from self_implementation.balanced_random_forest import BalancedRandomForestClassifier
 from .classification import Classification
-from .balanced_random_forest import BalancedRandomForestClassifier
 
 
 class RFClassifier(Classification):
