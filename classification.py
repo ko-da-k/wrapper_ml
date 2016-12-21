@@ -80,22 +80,23 @@ class Classification(MlData):
         """
         feature = self.x_values().as_matrix()
         label = self.y_values().as_matrix()
+        cv = StratifiedKFold(label, n_folds=k, shuffle=True)
+        # ラベルをshuffleするのでtrueとpredは再構成する必要あり
         true_label = np.array([])
         pred_label = np.array([])
-        miss = pd.DataFrame(columns=["predict", "true"])
-        cv = StratifiedKFold(label, n_folds=k, shuffle=True)
+        miss = pd.DataFrame(columns=["predict", "true"])  # 交差検定でミスしたラベルのインデックスとミスの仕方を記録
+
         model = self._return_base_model()
         for train_index, test_index in cv:
             model.fit(feature[train_index], label[train_index])
             pred = model.predict(feature[test_index])
             for i in range(0, len(test_index)):
-                if pred[i] != label[test_index][i]:
+                if pred[i] != label[test_index][i]:  # ミスってた場合
                     miss_row = pd.DataFrame([[pred[i], label[test_index][i]]],
                                             columns=["predict", "true"], index=[test_index[i]])
                     miss = pd.concat([miss, miss_row], axis=0)
             true_label = np.hstack([true_label, label[test_index]])
             pred_label = np.hstack([pred_label, pred])
-        del model
         print(classification_report(true_label, pred_label))
         return cr_to_df(classification_report(true_label, pred_label)),miss
 

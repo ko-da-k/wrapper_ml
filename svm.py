@@ -43,20 +43,20 @@ class SVM(Classification):
         self._return_base_model = lambda: clf.best_estimator_
         print("set base model")
 
-        scores = [x[1] for x in clf.grid_scores_[:len(C_range) * len(gamma_range)]]
-        scores = np.array(scores).reshape(len(C_range), len(gamma_range))
-        self.rbf_scores = pd.DataFrame(scores, index=C_range, columns=gamma_range)
+        rbf_scores = np.array([x[1] for x in clf.grid_scores_[:len(C_range) * len(gamma_range)]]) \
+            .reshape(len(C_range), len(gamma_range))  # rbfの結果が最初
+        self.rbf_scores = pd.DataFrame(rbf_scores, index=C_range, columns=gamma_range)
         self.rbf_scores.index.name = "C"
         self.rbf_scores.columns.name = "gamma"
-        self.linear_scores = [x[1] for x in clf.grid_scores_[len(C_range) * len(gamma_range):]]
+        self.linear_scores = [x[1] for x in clf.grid_scores_[len(C_range) * len(gamma_range):]]  # rbfのスコアの後にlinear
 
         if plot:
             sns.heatmap(self.rbf_scores, annot=True, cmap="Blues")
-            sns.plt.show()
+            sns.plt.show()  # rbfの結果を可視化
             plt.plot(C_range, self.linear_scores)
             plt.xlabel("C")
             plt.ylabel("accuracy")
-            plt.show()
+            plt.show()  # linearの結果を可視化
 
         print(clf.best_estimator_)
         print("set classifier")
