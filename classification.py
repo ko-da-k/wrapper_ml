@@ -44,10 +44,11 @@ class Classification(MlData):
         super().__init__(dataFrame, y_column, x_columns)
 
     def _return_base_model(self):
-        """return base model"""
+        """CVなどに用いるためのbase model(学習させていないパラメータのみのモデル)を返す"""
         raise NotImplementedError()
 
-    def learn(self):
+    def learn_all_data(self):
+        """DataFrameのすべてのデータを学習させる"""
         self._clf = self._return_base_model()
         self._clf.fit(self.x_values().as_matrix(), self.y_values().as_matrix())
         self.predict = lambda x: self._clf.predict(x)
@@ -73,7 +74,7 @@ class Classification(MlData):
         return [i for v in [random.sample(list(self.data[self.y_column][self.data[self.y_column] == item].index), n)
                             for item in self.data[self.y_column].unique()] for i in v]
 
-    def cv(self, k: int = 5):
+    def cross_validation(self, k: int = 5):
         """
         交差検定を行う
         :param k: 交差数

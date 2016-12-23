@@ -20,7 +20,7 @@ class RFClassifier(Classification):
         return RandomForestClassifier(n_estimators=1000, n_jobs=-1, oob_score=True,
                                       class_weight="balanced")
 
-    def learn(self, isplot=True):
+    def learn_all_data(self, isplot=True):
         self._clf = self._return_base_model()
         self._clf.fit(self.x_values().as_matrix(), self.y_values().as_matrix())
         self.predict = lambda x: self._clf.predict(x)
