@@ -52,7 +52,7 @@ class Classification(MlData):
         self._clf.fit(self.x_values().as_matrix(), self.y_values().as_matrix())
         self.predict = lambda x: self._clf.predict(x)
 
-    def bootstrap_equal_labels(self, n_samples):
+    def bootstrap_each_class(self, n_samples):
         """
         bootstrap each labels. number of label's sample is equal to each other.
         This method is made for unbalanced data.
@@ -63,7 +63,7 @@ class Classification(MlData):
                                           n_samples=n_samples).index)
                             for item in self.data[self.y_column].unique()] for i in v]
 
-    def sampling_equal_labels(self, n):
+    def sampling_each_class(self, n):
         """
         resampling each labels without bootstrap. number of label's sample is equal to each other.
         This method is made for unbalanced data.

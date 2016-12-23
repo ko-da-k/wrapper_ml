@@ -89,8 +89,8 @@ class HAC(MlData):
         :param metric: ベクトル間の距離
         """
         super().__init__(dataFrame, y_column, x_columns)
-        self.method = method
-        self.metric = metric
+        self.method = method  # Ward法とか群平均とか単連結とかの連結法
+        self.metric = metric  # ユークリッド距離とかコサイン類似度とかの距離尺度
         feature = self.x_values()
         if method == "ward":
             self.Z = ward(feature)
@@ -107,7 +107,7 @@ class HAC(MlData):
         c, coph_dists = cophenet(self.Z, self.distance)
         print("Cophenetic Correlation Coefficient: ", c)
 
-    def clustering(self, n: int = 6, name: str = False, kind: str = 'bar', isplot: bool = True):
+    def run_clustering(self, n: int = 6, name: str = False, kind: str = 'bar', isplot: bool = True):
         """
         :param n: クラスタ数
         :param name: 結果ファイルの保存名
@@ -138,7 +138,7 @@ class HAC(MlData):
     def set_tree_structure(self):
         """ツリー構造を表現"""
         self.c_index = {}  # 結合されていった順に,クラスタ内のインデックスが入る
-        self.tree = {}
+        self.tree = {}  # 順に何番目と何番目が結合されていったのかが格納される
         for i in range(0, len(self.Z)):
             self.tree[i] = [int(self.Z[i, 0]), int(self.Z[i, 1])]  # Zのクラスタ連結部分のみ抽出
 
@@ -168,7 +168,7 @@ class HAC(MlData):
             cls2 = self.c_index[self.tree[index][1] - len(self.x_values())]
         return (cls1, cls2)
 
-    def z_threshold(self, threshold: float):
+    def calculate_z_threshold(self, threshold: float):
         """
         :param threshold: 閾値
         :return: [閾値,クラスタ数]
