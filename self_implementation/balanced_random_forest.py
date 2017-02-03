@@ -24,12 +24,15 @@ def _sampling_equal(y_values: np.ndarray, n_samples: int, bootstrap: bool = True
     :param bootstrap: whether bootstrap or not
     :return: sampling index
     """
+    unique_list = np.unique(y_values)
+    y_series = pd.Series(y_values)  # indexを取得するのにpandasの方が扱いやすいため
+    # ラベルごとにindexをサンプリング
     if bootstrap:
-        return [i for v in [resample(pd.Series(y_values)[pd.Series(y_values) == uq].index,
-                                     n_samples=n_samples) for uq in np.unique(y_values)] for i in v]
+        each_label = [resample(y_series[y_series == uq].index.tolist(), n_samples=n_samples) for uq in unique_list]
     else:
-        return [i for v in [sample(list(pd.Series(y_values)[pd.Series(y_values) == uq].index),
-                                   n_samples) for uq in np.unique(y_values)] for i in v]
+        each_label = [sample(y_series[y_series == uq].index.tolist(), n_samples) for uq in unique_list]
+
+    return [inner for outer in each_label for inner in outer]  # 2重リストを1重に
 
 
 class BalancedRandomForestClassifier():
@@ -56,12 +59,15 @@ class BalancedRandomForestClassifier():
             self.max_features = round(sqrt(x_values.shape[1]))
         # bootstrap等で木に学習させるデータを選択
         index_list = [_sampling_equal(y_values, self.n_samples, self.bootstrap) for i in range(0, self.n_estimator)]
+
         # 木ごとの特徴量を選択
         self.feature_list = [sample(range(0, x_values.shape[1]), self.max_features) for i in range(0, self.n_estimator)]
+
         # 上記に基づいて木を構築
         self.forest = Parallel(n_jobs=-1, backend="threading")(
             delayed(_build_tree)(x_values[np.ix_(index, feature)], y_values[index])
             for index, feature in zip(index_list, self.feature_list))
+
         # 各木の予測の多数決で決定
         self.predict = lambda x: [Counter(item).most_common(1)[0][0]
                                   for item in np.array([tree.predict(x[:, feature])
