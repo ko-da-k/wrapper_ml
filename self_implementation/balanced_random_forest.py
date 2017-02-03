@@ -68,14 +68,22 @@ class BalancedRandomForestClassifier():
             delayed(_build_tree)(x_values[np.ix_(index, feature)], y_values[index])
             for index, feature in zip(index_list, self.feature_list))
 
-        # 各木の予測の多数決で決定
-        self.predict = lambda x: [Counter(item).most_common(1)[0][0]
-                                  for item in np.array([tree.predict(x[:, feature])
-                                                        for tree, feature in zip(self.forest, self.feature_list)]).T]
         # ここからはimportanceの計算
-        count = np.zeros(x_values.shape[1])
+        count = np.zeros(x_values.shape[1])  # 特徴量の出現回数集計用の初期定義
         feature_importances = np.zeros(x_values.shape[1])
         for tree, feature in zip(self.forest, self.feature_list):
             count[feature] += 1
             feature_importances[feature] += tree.feature_importances_
         self.feature_importances_ = feature_importances / count
+
+    def predict(self, x_values: np.ndarray) -> list:
+        """
+        入力データのラベルを予測 1つであっても2次元arrayで
+        :param x_values: 予測したいデータ
+        :return: predict label
+        """
+        each_tree_predict = np.array([tree.predict(x_values[:, feature]) for tree, feature
+                                      in zip(self.forest, self.feature_list)])
+
+        # 転地させないとラベルごとの予測結果にならないことに注意
+        return [Counter(item).most_common(1)[0][0] for item in each_tree_predict.T]
