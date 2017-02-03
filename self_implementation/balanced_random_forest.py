@@ -75,6 +75,7 @@ class BalancedRandomForestClassifier():
             count[feature] += 1
             feature_importances[feature] += tree.feature_importances_
         self.feature_importances_ = feature_importances / count
+        self.feature_importances_ = self.feature_importances_ / sum(self.feature_importances_)  # 正規化
 
     def predict(self, x_values: np.ndarray) -> list:
         """
