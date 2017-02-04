@@ -20,14 +20,14 @@ def cr_to_df(cr: str):
     :param cr: classification_report
     :return: pd.Dataframe
     """
-    crlist = list(filter(lambda x: len(x) != 0, re.split(" |\n", cr)))
-    crlist[crlist.index("avg")] = "".join(crlist[crlist.index("avg"):crlist.index("avg") + 3])
-    del crlist[crlist.index("avg/total") + 1:crlist.index("avg/total") + 3]
-    column = crlist[0:4]
-    del crlist[0:4]
-    index = np.array(crlist)[list(range(0, len(crlist), 5))]
-    # del np.array(crlist)[list(range(0,len(crlist),5))]
-    result = [crlist[i + 1:i + 5] for i in range(0, len(crlist), 5)]
+    clf_report = list(filter(lambda x: len(x) != 0, re.split(" |\n", cr)))
+    clf_report[clf_report.index("avg")] = "".join(clf_report[clf_report.index("avg"):clf_report.index("avg") + 3])
+    del clf_report[clf_report.index("avg/total") + 1:clf_report.index("avg/total") + 3]
+    column = clf_report[0:4]
+    del clf_report[0:4]
+    index = np.array(clf_report)[list(range(0, len(clf_report), 5))]
+    # del np.array(clf_report)[list(range(0,len(clf_report),5))]
+    result = [clf_report[i + 1:i + 5] for i in range(0, len(clf_report), 5)]
     crdf = pd.DataFrame(result, columns=column, index=index)
     crdf[["precision", "recall", "f1-score"]] = crdf[["precision", "recall", "f1-score"]].astype(float)
     crdf["support"] = crdf["support"].astype(int)
@@ -50,37 +50,16 @@ class Classification(MlData):
     def learn_all_data(self):
         """DataFrameのすべてのデータを学習させる"""
         self._clf = self._return_base_model()
-        self._clf.fit(self.x_values().as_matrix(), self.y_values().as_matrix())
+        self._clf.fit(self.x_values.as_matrix(), self.y_values.as_matrix())
         self.predict = lambda x: self._clf.predict(x)
-
-    def bootstrap_each_class(self, n_samples):
-        """
-        bootstrap each labels. number of label's sample is equal to each other.
-        This method is made for unbalanced data.
-        :param n_samples: sampling number
-        :return: list of DataFrame's index
-        """
-        return [i for v in [list(resample(self.data[self.y_column][self.data[self.y_column] == item],
-                                          n_samples=n_samples).index)
-                            for item in self.data[self.y_column].unique()] for i in v]
-
-    def sampling_each_class(self, n):
-        """
-        resampling each labels without bootstrap. number of label's sample is equal to each other.
-        This method is made for unbalanced data.
-        :param n: sampling number
-        :return: list of DataFrame's index
-        """
-        return [i for v in [random.sample(list(self.data[self.y_column][self.data[self.y_column] == item].index), n)
-                            for item in self.data[self.y_column].unique()] for i in v]
 
     def cross_validation(self, k: int = 5):
         """
         交差検定を行う
         :param k: 交差数
         """
-        feature = self.x_values().as_matrix()
-        label = self.y_values().as_matrix()
+        feature = self.x_values.as_matrix()
+        label = self.y_values.as_matrix()
         cv = StratifiedKFold(label, n_folds=k, shuffle=True)
         # ラベルをshuffleするのでtrueとpredは再構成する必要あり
         true_label = np.array([])
@@ -99,13 +78,13 @@ class Classification(MlData):
             true_label = np.hstack([true_label, label[test_index]])
             pred_label = np.hstack([pred_label, pred])
         print(classification_report(true_label, pred_label))
-        return cr_to_df(classification_report(true_label, pred_label)),miss
+        return cr_to_df(classification_report(true_label, pred_label)), miss
 
     def draw_learning_curve(self):
         """http://aidiary.hatenablog.com/entry/20150826/1440596779"""
         train_sizes, train_scores, test_scores = learning_curve(self._return_base_model(),
-                                                                self.x_values().as_matrix(),
-                                                                self.y_values().as_matrix(),
+                                                                self.x_values.as_matrix(),
+                                                                self.y_values.as_matrix(),
                                                                 cv=10,
                                                                 scoring="mean_squared_error",
                                                                 train_sizes=np.linspace(0.5, 1.0, 10))
@@ -116,8 +95,8 @@ class Classification(MlData):
 
     def draw_roc_curve(self):
 
-        train, test, train_label, test_label = train_test_split(self.x_values().as_matrix(),
-                                                                self.y_values())
+        train, test, train_label, test_label = train_test_split(self.x_values.as_matrix(),
+                                                                self.y_values)
         probas_ = self._return_base_model().fit(train, train_label).predict_proba(test)
 
         # Compute ROC curve and area the curve

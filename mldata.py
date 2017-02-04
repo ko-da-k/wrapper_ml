@@ -16,5 +16,22 @@ class MlData:
         self.data = dataFrame
         self.x_columns = x_columns
         self.y_column = y_column
-        self.x_values = lambda: self.data[self.x_columns]
-        self.y_values = lambda: self.data[self.y_column]
+        self.x_values = self.data[self.x_columns]
+        self.y_values = self.data[self.y_column]
+
+    def set_x_columns(self, x_columns: list):
+        """
+        カラム名を更新したときに参照する値も更新する
+        :param x_columns: 新しい説明変数,単回帰でもlist
+        """
+        self.x_columns = x_columns
+        self.x_values = self.data[self.x_columns]
+
+    def set_y_column(self, y_column: str):
+        """
+        カラム名を更新した時に参照する値も更新する
+        :param y_column: 目的変数
+        """
+        self.y_column = y_column
+        self.y_values = self.data[self.y_column]
+
