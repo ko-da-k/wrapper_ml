@@ -9,7 +9,7 @@ from sklearn.ensemble import RandomForestRegressor
 from .regression import Regression
 
 
-class RFClassifier(Regression):
+class RFRegressor(Regression):
     """RandomForestによる分類"""
 
     def __init__(self, dataFrame: pd.DataFrame, y_column: str, x_columns: list):
