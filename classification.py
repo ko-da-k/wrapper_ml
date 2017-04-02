@@ -43,16 +43,6 @@ class Classification(MlData):
     def __init__(self, dataFrame: pd.DataFrame, y_column: str, x_columns: list):
         super().__init__(dataFrame, y_column, x_columns)
 
-    def _return_base_model(self):
-        """CVなどに用いるためのbase model(学習させていないパラメータのみのモデル)を返す"""
-        raise NotImplementedError()
-
-    def learn_all_data(self):
-        """DataFrameのすべてのデータを学習させる"""
-        self._clf = self._return_base_model()
-        self._clf.fit(self.x_values.as_matrix(), self.y_values.as_matrix())
-        self.predict = lambda x: self._clf.predict(x)
-
     def cross_validation(self, k: int = 5):
         """
         交差検定を行う
