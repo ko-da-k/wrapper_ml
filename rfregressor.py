@@ -20,7 +20,7 @@ class RFRegressor(Regression):
 
     def learn_all_data(self, isplot=True):
         self._clf = self._return_base_model()
-        self._clf.fit(self.x_values().as_matrix(), self.y_values().as_matrix())
+        self._clf.fit(self.x_values.as_matrix(), self.y_values.as_matrix())
         self.predict = lambda x: self._clf.predict(x)
 
         self.importance = pd.DataFrame({"key": self.x_columns,
