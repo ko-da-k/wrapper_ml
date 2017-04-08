@@ -4,19 +4,20 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
 
+from .classification import Classification
 from .regression import Regression
 
 
-class RFRegressor(Regression):
+class GBDTClassifier(Classification):
     """RandomForestによる分類"""
 
     def __init__(self, dataFrame: pd.DataFrame, y_column: str, x_columns: list):
         super().__init__(dataFrame, y_column, x_columns)
 
     def _return_base_model(self):
-        return RandomForestRegressor(n_estimators=1000, n_jobs=-1, oob_score=True)
+        return GradientBoostingClassifier(n_estimators=3000, n_jobs=-1, learning_rate=0.1)
 
     def learn_all_data(self, isplot=True):
         self._clf = self._return_base_model()

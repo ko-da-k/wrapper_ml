@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pandas as pd
+from sklearn.grid_search import GridSearchCV
 
 
 class MlData:
@@ -44,3 +45,15 @@ class MlData:
         self._clf = self._return_base_model()
         self._clf.fit(self.x_values.as_matrix(), self.y_values.as_matrix())
         self.predict = lambda x: self._clf.predict(x)
+
+    def grid_search(self, parameters: dict, cv=5):
+        """
+        grid search cv
+        :param parameters: パラメータを辞書形式で
+        :param cv: 交差数
+        """
+        model = self._return_base_model()
+        gscv = GridSearchCV(model, parameters, cv=cv)
+        gscv.fit(self.x_values.as_matrix(), self.y_values.as_matrix())
+        print(gscv.best_estimator_)
+        self._return_base_model = lambda: gscv.best_estimator_

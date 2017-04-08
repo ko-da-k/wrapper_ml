@@ -38,7 +38,7 @@ class SVM(Classification):
                            tuned_parameters, cv=cv, n_jobs=-1)
 
         print("grid search...")
-        clf.fit(self.x_values().as_matrix(), self.y_values().as_matrix())
+        clf.fit(self.x_values.as_matrix(), self.y_values.as_matrix())
 
         self._return_base_model = lambda: clf.best_estimator_
         print("set base model")
