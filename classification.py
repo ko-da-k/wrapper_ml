@@ -7,9 +7,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.utils import resample
-from sklearn.cross_validation import train_test_split, StratifiedKFold
+from sklearn.model_selection import train_test_split, StratifiedKFold, learning_curve
 from sklearn.metrics import classification_report, roc_curve, auc
-from sklearn.learning_curve import learning_curve
 import seaborn as sns
 from .mldata import MlData
 
@@ -50,7 +49,7 @@ class Classification(MlData):
         """
         feature = self.x_values.as_matrix()
         label = self.y_values.as_matrix()
-        cv = StratifiedKFold(label, n_folds=k, shuffle=True)
+        cv = StratifiedKFold(n_splits=k, shuffle=True).split(feature, label)
         # ラベルをshuffleするのでtrueとpredは再構成する必要あり
         true_label = np.array([])
         pred_label = np.array([])
